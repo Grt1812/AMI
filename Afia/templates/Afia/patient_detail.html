@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+  <title>Health Monitor</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="st-container">
+      <button class="back-button" onclick="retour_home()">Retour</button>
+        <script>
+          function retour_home(){
+              window.location.href="{% url 'acceuil' %}"
+          }
+      </script>
+        <div id="health-monitor">
+            <div class="health-item" id="heart-rate-section">
+                <img id="heart-img" src="{% static 'image/coeur.png' %}" alt="Heart Image">
+                <div class="health-info">Heart-rate : <span id="bpm">{{ heart_rate }}</span> bpm</div>
+            </div>
+            <div class="health-item" id="blood-pressure-section">
+                <img id="bp-img" src="{% static 'image/pression.png' %}" alt="Blood Pressure Image">
+                <div class="health-info">Blood pressure : <span id="bp">{{ blood_pressure }}</span> mmHg</div>
+            </div>
+            <div class="health-item" id="oxygen-saturation-section">
+                <img id="ox-img" src="{% static 'image/oxygene.png' %}" alt="Oxygen Saturation Image">
+                <div class="health-info">Oxygen saturation : <span id="oxygen">{{ oxygen }}</span>%</div>
+            </div>
+            <div class="health-item" id="body-temperature-section">
+                <img id="temp-img" src="{% static 'image/temperature.png' %}" alt="Body Temperature Image">
+                <div class="health-info">Body temperature : <span id="temperature">{{ temperature }}</span>°C</div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'scripts/script.js' %}"></script>
+</body>
+</html>

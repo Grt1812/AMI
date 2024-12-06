@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messagerie</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="chat">
+            <h2>Messagerie</h2>
+                <button class="back-button" onclick="retour_home()">Retour</button>
+                <script>
+                    function retour_home(){
+                        window.location.href="{% url 'acceuil' %}"
+                    }
+        
+                </script>
+            <div class="chat-box" id="chat-box">
+                {% for u in boxes %}
+                    <div class="message received">
+                        <a href="{% url 'message' u.0 %}">
+                            <img src="{% static 'image/icone.png' %}" alt="Profil" class="profile-pic">
+                            <span>{{u.1}}</span>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="chat-input">
+                <input type="text" id="message-input" placeholder="Écrire un message...">
+                <button onclick="sendMessage()">Envoyer</button>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'scripts/script.js' %}"></script>
+</body>
+</html>

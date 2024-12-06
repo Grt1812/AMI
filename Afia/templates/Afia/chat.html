@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messagerie</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="chat">
+            <h2>Messagerie</h2>
+                <button class="back-button" onclick="retour_session_message()">Retour</button>
+                <script>
+                    function retour_session_message(){
+                        window.location.href="{% url 'session' %}"
+                    }
+        
+                </script>
+            {%for u in messages%}
+                {% if u.from_patient %}
+                    <div class="chat-box" id="chat-box">
+                        <div class="message received">
+                            <img src="{% static 'image/icone.png' %}" alt="Profil" class="profile-pic">
+                            <span>{{u.message}}</span>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="chat-box" id="chat-box">
+                        <div class="message received">
+                            <img src="{% static 'image/icone medecin.jpg' %}" alt="Profil" class="profile-pic">
+                            <span>{{u.message}}</span>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div class="chat-input">
+                <input type="text" id="message-input" placeholder="Écrire un message...">
+                <button onclick="sendMessage()">Envoyer</button>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'scripts/script.js' %}"></script>
+</body>
+</html>

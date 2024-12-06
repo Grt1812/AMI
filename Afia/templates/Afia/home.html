@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afia</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+    <body>
+        <div class="top">
+            <header>
+                <div class="menu-gauche">
+                    <span class="nom-site">AFIA</span>
+                    <button id="mode-toggle">Mode clair</button>
+                </div>
+                <button id="menu-toggle" class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+                <div class="menu-droite">
+                    {% if is_patient and existe %}
+                        <a href="{% url 'patient_detail' patient_id %}">Ma santé</a>
+                    {% else%}
+                        {% if existe and not is_patient %}
+                            <a href="{% url 'ma_sante' patient_id %}">Ma santé</a>
+                        {% endif %}
+                    {% endif %}
+                    <a href="{% url 'session' %}">Message</a>
+                    {% if not existe %}
+                        <a href="{% url 'profil' %}">Profil</a>
+                    {% endif %}
+                    <a href="{% url 'logout' %}">Déconnexion</a>
+                </div>
+            </header>
+            <div class="top-container">
+                <h1>Bienvenue sur Afia</h1>
+                
+                <div class="separator">
+                    <div class="separator-line"></div>
+                    <div class="separator-middle"></div>
+                    <div class="separator-line"></div>
+                </div>
+                <div class="image">
+                        <img src="{% static 'image/num.jpeg' %}" alt=""> 
+                </div>
+                <div class="separator">
+                    <div class="separator-line"></div>
+                    <div class="separator-middle"></div>
+                    <div class="separator-line"></div>
+                </div>
+                <div class="text">
+                    <p>
+                        Afia est votre outil indispensable pour atteindre vos objectifs de santé. Avec notre application, vous pouvez :  
+                    </p>
+                    <ul>
+                        <li>Suivre vos progrès en temps réel</li>
+                        <li>Trouver des plans d'entraînement et de nutrition adaptés à vos besoins</li>
+                        <li>Gérer vos médicaments et rendez-vous médicaux</li>
+                        <li>Se connecter à des appareils portables</li>
+                    </ul>
+                </div>
+                <div class="separator">
+                    <div class="separator-line"></div>
+                    <div class="separator-middle"></div>
+                    <div class="separator-line"></div>
+                </div>
+                <h2>Réalisateurs</h2>
+                <div class="realisateur">
+                    <div class="card">
+                        <div class="realisateur">
+                            <div class="card-realisateur">
+                                <img src="{% static 'image/grt.jpeg' %}" alt="" width="100 px;" height="100 px">
+                                <h3>Ir Grt Ndakola</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="separator">
+                    <div class="separator-line"></div>
+                    <div class="separator-middle"></div>
+                    <div class="separator-line"></div>
+                </div>
+            </div>
+        <script src="{% static 'scripts/script.js' %}"></script>
+</body>
+</html>

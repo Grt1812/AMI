@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'scripts/script.js' %}" defer></script>
+</head>
+<body>
+    <div class="container">
+        <button class="back-button" onclick="retour_home()">Retour</button>
+        <script>
+            function retour_home(){
+                window.location.href="{% url 'acceuil' %}"
+            }
+
+        </script>
+        <form class="profile-form" action="{% url 'profil_enregistrer' %}">
+            {% csrf_token %}
+            <h2>Mettre à jour le profil</h2>
+            <div class="form-group">
+                <img id="profile-pic-preview" src="{% static 'image/icone.png' %}" alt="Prévisualisation de l'image" style="display: none;">
+            </div>
+            <div class="form-group">
+                <label for="nom">Nom</label>
+                <input type="text" id="nom" name="nom" required>
+            </div>
+            <div class="form-group">
+                <label for="prenom">Prenom</label>
+                <input type="text" id="prenom" name="prenom" required>
+            </div>
+            <div class="form-group">
+                <label for="sexe">Sexe</label>
+                <select id="sexe" name="sexe" required>
+                    <option value="homme">Masculin</option>
+                    <option value="femme">Feminin</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dob">Date de naissance</label>
+                <input type="date" id="dob" name="dob" required>
+            </div>
+            <div class="form-group">
+                <label for="taille">Taille (cm)</label>
+                <input type="number" id="taille" name="taille" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="poids">Poids (kg)</label>
+                <input type="number" id="poids" name="poids" min="0" required>
+            </div>
+            <button type="submit" class="button">Enregistrer</button>
+        </form>
+    </div>
+</body>
+</html>

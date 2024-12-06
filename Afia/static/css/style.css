@@ -1,0 +1,552 @@
+/* Variables CSS définies dans :root pour une réutilisation facile */
+:root {
+    --primaryColor: #ffffff09;
+    --btnColor1: #007bff;
+    --btnColor2: #0567cf;
+    --borderRadiusBtn: 5px;
+}
+
+body {
+    color: #343a40;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: whitesmoke;
+}
+
+/* Style du header avec une apparence floue et ombrée */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: rgba(248, 249, 250, 0);
+    backdrop-filter: blur(25px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+.menu-gauche, .menu-droite {
+    display: flex;
+    align-items: center;
+}
+
+.nom-site {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-right: 1rem;
+}
+
+#mode-toggle {
+    padding: 0.5rem 1rem;
+    background-color: var(--btnColor1);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: var(--borderRadiusBtn);
+}
+
+.menu-droite a {
+    margin-left: 1.5rem;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    color: var(--btnColor1);
+    font-size: 1rem;
+    border-radius: var(--borderRadiusBtn);
+}
+
+.menu-droite a:hover {
+    background-color: #e2e6ea;
+}
+
+main {
+    margin-top: 4rem;
+    padding: 2rem;
+}
+
+/* Styles pour le mode sombre */
+.dark-mode {
+    background-color: #343a40;
+    color: whitesmoke;
+}
+
+.dark-mode header {
+    background-color: rgba(73, 80, 87, 0);
+}
+
+.dark-mode #mode-toggle {
+    background-color: #ffc107;
+}
+
+/* Styles pour le menu hamburger */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 2rem;
+    height: 2rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    margin-left: 1rem;
+}
+
+.hamburger .bar {
+    width: 2rem;
+    height: 0.25rem;
+    background-color: black;
+    border-radius: 10px;
+    transition: all 0.3s linear;
+    position: relative;
+    transform-origin: 1px;
+}
+
+.hamburger.is-open .bar:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.is-open .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.is-open .bar:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+        margin-left: auto;
+    }
+
+    .menu-droite {
+        backdrop-filter: blur(25px);
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        background-color: rgba(245, 222, 179, 0.692);
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        padding: 1rem 2rem;
+        animation: slideIn 0.3s forwards;
+        border-radius: 10px;
+    }
+
+    .menu-droite.active {
+        display: flex;
+    }
+
+    .menu-droite a {
+        width: 100%;
+        text-align: left;
+        margin: 0.5rem 0;
+        padding: 0.5rem 1rem;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-20%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+}
+
+.dark-mode .hamburger .bar {
+    background-color: whitesmoke;
+}
+
+/* Styles pour les boutons et conteneurs */
+.container {
+    backdrop-filter: blur(25px);
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    background-color: var(--primaryColor);
+    box-shadow: 0 0 10px rgba(22, 3, 3, 0.76);
+    border-radius: 8px;
+    position: relative;
+}
+
+.back-button, .button, .button-auth button, .form button {
+    background-color: var(--btnColor1);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: var(--borderRadiusBtn);
+    cursor: pointer;
+}
+
+.back-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.back-button:hover, .button:hover, .button-auth button:hover, .form button:hover {
+    background-color: var(--btnColor2);
+}
+
+.button, .button-auth button {
+    width: 100%;
+}
+
+.button-auth button {
+    margin: 15px;
+    padding: 10px 15%;
+}
+
+.form {
+    display: none;
+}
+
+.profile-form h2, .form h2 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: var(--borderRadiusBtn);
+}
+
+#profile-pic-preview {
+    margin-top: 10px;
+    max-width: 50%;
+    height: auto;
+    border: 1px solid #ccc;
+    border-radius: var(--borderRadiusBtn);
+    display: block;
+}
+
+/* Styles pour la boîte de chat */
+.chat-header {
+    background-color: #f8f9fa;
+    backdrop-filter: blur(25px);
+    color: #1f1e1e;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chat-box {
+    padding: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.chat {
+    text-align: center;
+}
+
+.message {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: var(--borderRadiusBtn);
+    line-height: 1.4;
+}
+
+.message.received {
+    color: #1a1313;
+    background-color: #f8f9fa;
+    align-self: flex-start;
+}
+
+.message.sent {
+    background-color: var(--btnColor1);
+    color: #fff;
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.profile-pic {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.message.sent .profile-pic {
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: var(--borderRadiusBtn);
+    margin-right: 10px;
+}
+
+.chat-input button {
+    padding: 10px 20px;
+    background-color: var(--btnColor1);
+    color: #fff;
+    border: none;
+    border-radius: var(--borderRadiusBtn);
+    cursor: pointer;
+}
+
+.chat-input button:hover {
+    background-color: var(--btnColor2);
+}
+
+/* Styles pour les formulaires */
+.form input {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: var(--borderRadiusBtn);
+}
+
+/* Styles pour le conteneur supérieur */
+.top {
+    width: 98%;
+    height: 90%;
+}
+
+h1 {
+    font-size: 50px;
+    text-align: center;
+}
+
+.top-container {
+    align-items: center;
+    border-radius: 8px;
+    position: relative;
+}
+.top-container h1 {
+    max-width: 100%;
+    text-transform: uppercase;
+    background: linear-gradient(to right, #2fa4f1, #a9bbd3, #a9e79c, #306bb9, #7de0e0, #395099, #6081ac);
+    background-size: 200% auto;
+    color: #000;
+    background-clip: text;
+    text-fill-color: transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: colorAnimation 5s ease infinite;
+  }
+  
+  @keyframes colorAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+/* Image */
+.image {
+    display: flex;
+    
+}
+
+img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* Séparateur stylisé pour diviser le contenu */
+.separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.separator-line {
+    margin: 10px;
+    flex-grow: 1;
+    height: 2px;
+    background-color: var(--btnColor1);
+}
+
+.separator-middle {
+    width: 50px;
+    height: 10px;
+    background-color: var(--btnColor1);
+    margin: 0 10px;
+    border-radius: 4px;
+}
+
+/* Styles pour le texte avec arrière-plan flou */
+.text {
+    text-align: left;
+    margin: 0 auto;
+    background-color: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(25px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.text p {
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 1.2em;
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+.text ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    padding: 0;
+}
+
+.text li {
+    font-size: 1em;
+    margin: 5px 0;
+}
+
+/* Styles pour les cartes des réalisateurs */
+.realisateur {
+    gap: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+.card-realisateur {
+    overflow: hidden;
+    text-align: center;
+}
+
+.card-realisateur img {
+    width: 80px;
+    height: auto;
+    border-radius: 10px;
+    display: block;
+}
+
+h2 {
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.card-realisateur h3 {
+    text-transform: capitalize;
+    font-size: 25px;
+    margin: 10px 0;
+}
+
+.card-realisateur p {
+    font-size: 15px;
+    margin: 10px;
+    color: #666;
+}
+
+/* Styles pour le moniteur de santé */
+#health-monitor {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.health-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+    background: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(25px);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    height: 250px;
+    box-sizing: border-box;
+}
+
+#heart-img, #bp-img, #ox-img, #temp-img {
+    height: 150px;
+    width: auto;
+    animation: pulse 1s infinite;
+}
+
+.health-info {
+    font-size: 18px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Styles pour les conteneurs supplémentaires */
+.st-container {
+    position: relative;
+    border: 2px solid rgba(221, 221, 221, 0.07);
+    border-radius: 8px;
+    background-color: var(--primaryColor);
+    box-shadow: 0 0 10px rgba(22, 3, 3, 0.897);
+    backdrop-filter: blur(25px);
+    max-width: 800px;
+    margin: auto;
+}
+
+#health-monitor {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.health-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.health-info {
+    font-size: 18px;
+}
