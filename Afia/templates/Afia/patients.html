@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Table de Bord</title>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+<body>
+    <button class="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="logo">
+                <img src="logo.png" alt="AMI Logo" />
+                <h2>AFIA</h2>
+            </div>
+            <ul class="nav-links">
+                <li class="active">
+                    <a href="#"><i class="fas fa-home"></i> Tableau de bord</a>
+                </li>
+                <li>
+                    <a href="patients.html"
+                      ><i class="fas fa-user-injured"></i> Patients</a
+                    >
+                </li>
+                <!-- Autres liens -->
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header>
+                <div class="header-left">
+                    <h1>Tableau de Bord</h1>
+                    <p>Assistant Médical Intelligent - Cardio-Vasculaire</p>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <!-- Statistics Cards -->
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <div class="stat-info">
+                        <h3>Patients Totaux</h3>
+                        <p>{{ total_patients }}</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-hospital-user"></i>
+                    <div class="stat-info">
+                        <h3>Nouveaux Patients</h3>
+                        <p>{{ new_patients }}</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <div class="stat-info">
+                        <h3>RDV Aujourd'hui</h3>
+                        <p>{{ rdv_today }}</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-heart"></i>
+                    <div class="stat-info">
+                        <h3>Cas Critiques</h3>
+                        <p>{{ critical_cases }}</p>
+                    </div>
+                </div>
+
+                <!-- Recent Patients Table -->
+                <div class="recent-patients">
+                    <h3>Patients Récents</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Sexe</th>
+                                <th>Date de Naissance</th>
+                                <th>Diagnostic</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for patient in patients %}
+                            <tr>
+                                <td>{{ patient.id }}</td>
+                                <td>{{ patient.identite_patient.nom }}</td>
+                                <td>{{ patient.identite_patient.prenom }}</td>
+                                <td>{{ patient.identite_patient.sexe }}</td>
+                                <td>{{ patient.identite_patient.date_naissance }}</td>
+                                <td>{{ patient.diagnostic }}</td>
+                                <td>
+                                    <span class="status {{ patient.statut|lower }}">
+                                        {{ patient.statut }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7">Aucun patient trouvé.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Form to Add Patient -->
+                <div class="add-patient-form">
+                    <h3>Ajouter un Patient</h3>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-success">Ajouter</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="{% static 'scripts/script.js' %}"></script>
+</body>
+</html>

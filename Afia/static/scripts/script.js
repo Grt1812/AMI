@@ -1,112 +1,169 @@
-// Affiche l'image uploadée
+// Gestion de la sidebar (responsive avec bouton hamburger)
+document.addEventListener("DOMContentLoaded", () => {
+  const menuToggle = document.querySelector(".menu-toggle");
+  const sidebar = document.querySelector(".sidebar");
+
+  // Vérifier si les éléments existent avant d'ajouter les événements
+  if (menuToggle && sidebar) {
+    menuToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("open"); // Toggle de la classe "open"
+    });
+
+    // Masquer la sidebar si l'utilisateur clique en dehors (mode mobile)
+    document.addEventListener("click", (event) => {
+      if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+        sidebar.classList.remove("open");
+      }
+    });
+  }
+});
+
+// Afficher l'image uploadée
 function previewImage(event) {
   const input = event.target;
-  const preview = document.getElementById('profile-pic-preview');
+  const preview = document.getElementById("profile-pic-preview");
 
   if (input.files && input.files[0]) {
     const reader = new FileReader();
 
-    reader.onload = function() {
+    reader.onload = () => {
       preview.src = reader.result;
-      preview.style.display = 'block';
+      preview.style.display = "block";
     };
 
     reader.readAsDataURL(input.files[0]);
   } else {
-    preview.src = '';
-    preview.style.display = 'none';
+    preview.src = "";
+    preview.style.display = "none";
   }
 }
 
-// Contrôle de la date de naissance : max = aujourd'hui et min = aujourd'hui - 200 ans
-document.addEventListener('DOMContentLoaded', () => {
-  const dobInput = document.getElementById('dob');
-  const today = new Date();
-  const maxDate = today.toISOString().split('T')[0];
-  const minDate = new Date(today.setFullYear(today.getFullYear() - 200)).toISOString().split('T')[0];
+// Contrôle des limites pour la date de naissance (max = aujourd'hui, min = -200 ans)
+document.addEventListener("DOMContentLoaded", () => {
+  const dobInput = document.getElementById("dob");
 
-  dobInput.setAttribute('max', maxDate);
-  dobInput.setAttribute('min', minDate);
+  if (dobInput) {
+    const today = new Date();
+    const maxDate = today.toISOString().split("T")[0];
+    const minDate = new Date(today.setFullYear(today.getFullYear() - 200)).toISOString().split("T")[0];
+
+    dobInput.setAttribute("max", maxDate);
+    dobInput.setAttribute("min", minDate);
+  }
 });
 
-// Chat
-let isUser1 = true;
-
-function goBack() {
-  window.history.back();
-}
-
+// Fonction pour envoyer un message dans la boîte de chat
 function sendMessage() {
-  const chatBox = document.getElementById('chat-box');
-  const messageInput = document.getElementById('message-input');
+  const chatBox = document.getElementById("chat-box");
+  const messageInput = document.getElementById("message-input");
   const messageText = messageInput.value.trim();
 
-  if (messageText === '') {
+  if (messageText === "") {
     return; // Ne pas envoyer de message vide
   }
 
-  // Crée un nouveau div pour le message envoyé
-  const newMessage = document.createElement('div');
-  newMessage.classList.add('message', isUser1 ? 'sent' : 'received');
+  const newMessage = document.createElement("div");
+  newMessage.classList.add("message", isUser1 ? "sent" : "received");
 
-  const profilePic = document.createElement('img');
-  profilePic.src = isUser1 ? 'user1.jpg' : 'user2.jpg';
-  profilePic.alt = 'Profil';
-  profilePic.classList.add('profile-pic');
+  const profilePic = document.createElement("img");
+  profilePic.src = isUser1 ? "user1.jpg" : "user2.jpg";
+  profilePic.alt = "Profil";
+  profilePic.classList.add("profile-pic");
 
-  const messageContent = document.createElement('span');
+  const messageContent = document.createElement("span");
   messageContent.textContent = messageText;
 
   newMessage.appendChild(profilePic);
   newMessage.appendChild(messageContent);
 
-  // Ajoute le nouveau message à la boîte de chat
   chatBox.appendChild(newMessage);
+  messageInput.value = "";
 
-  // Efface le champ de saisie
-  messageInput.value = '';
-
-  // Défile la boîte de chat vers le bas pour voir le nouveau message
+  // Scroll automatique pour voir le dernier message
   chatBox.scrollTop = chatBox.scrollHeight;
 
-  // Change de user pour le prochain message
+  // Alterne entre les utilisateurs pour simuler une conversation
   isUser1 = !isUser1;
 }
 
-// Vérifie le stockage local pour l'état du mode sombre
-document.addEventListener('DOMContentLoaded', () => {
-  const modeToggle = document.getElementById('mode-toggle');
-  const body = document.body;
+// Gestion du mode sombre/clair avec stockage local
+document.addEventListener("DOMContentLoaded", () => {
+  const modeToggle = document.getElementById("mode-toggle");
 
-  if (localStorage.getItem('dark-mode') === 'true') {
-    body.classList.add('dark-mode');
-    modeToggle.textContent = 'Mode sombre';
-  } else {
-    body.classList.remove('dark-mode');
-    modeToggle.textContent = 'Mode clair';
+  if (modeToggle) {
+    const body = document.body;
+
+    // Appliquer le mode en fonction du stockage local
+    const isDarkMode = localStorage.getItem("dark-mode") === "true";
+    body.classList.toggle("dark-mode", isDarkMode);
+    modeToggle.textContent = isDarkMode ? "Mode clair" : "Mode sombre";
+
+    // Écouter les clics pour basculer entre les modes
+    modeToggle.addEventListener("click", () => {
+      const darkModeEnabled = body.classList.toggle("dark-mode");
+      modeToggle.textContent = darkModeEnabled ? "Mode clair" : "Mode sombre";
+      localStorage.setItem("dark-mode", darkModeEnabled);
+    });
   }
 });
 
-// Bascule le mode sombre/clair
-const modeToggle = document.getElementById('mode-toggle');
-modeToggle.addEventListener('click', () => {
-  document.body.classList.toggle('dark-mode');
+// Responsivité : affichage/masquage du menu droit
+document.addEventListener("DOMContentLoaded", () => {
+  const hamburger = document.getElementById("menu-toggle");
+  const menuDroite = document.querySelector(".menu-droite");
 
-  if (document.body.classList.contains('dark-mode')) {
-    modeToggle.textContent = 'Mode sombre';
-    localStorage.setItem('dark-mode', 'true');
-  } else {
-    modeToggle.textContent = 'Mode clair';
-    localStorage.setItem('dark-mode', 'false');
+  if (hamburger && menuDroite) {
+    hamburger.addEventListener("click", () => {
+      menuDroite.classList.toggle("active");
+      hamburger.classList.toggle("is-open");
+    });
   }
 });
 
-// Affichage/masquage du menu
-const hamburger = document.getElementById('menu-toggle');
-const menuDroite = document.querySelector('.menu-droite');
+// Charts.js : gestion des graphiques responsive
+document.addEventListener("DOMContentLoaded", () => {
+  const casesChartCtx = document.getElementById("casesChart").getContext("2d");
+  const pathologiesChartCtx = document.getElementById("pathologiesChart").getContext("2d");
 
-hamburger.addEventListener('click', () => {
-  menuDroite.classList.toggle('active');
-  hamburger.classList.toggle('is-open');
+  if (casesChartCtx && pathologiesChartCtx) {
+    // Exemple de graphique pour l'évolution des cas
+    new Chart(casesChartCtx, {
+      type: "line",
+      data: {
+        labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin"],
+        datasets: [
+          {
+            label: "Cas Critiques",
+            data: [30, 40, 25, 50, 60, 45],
+            backgroundColor: "rgba(255, 99, 132, 0.2)",
+            borderColor: "rgba(255, 99, 132, 1)",
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+    });
+
+    // Exemple de graphique pour la distribution des pathologies
+    new Chart(pathologiesChartCtx, {
+      type: "doughnut",
+      data: {
+        labels: ["Hypertension", "Diabète", "Arrêt Cardiaque", "Autres"],
+        datasets: [
+          {
+            label: "Pathologies",
+            data: [40, 20, 25, 15],
+            backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+    });
+  }
 });
-

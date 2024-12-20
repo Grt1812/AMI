@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afia - Statistiques du Patient</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Inclure Plotly -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <img src="logo.png" alt="AMI Logo">
+                <h2>AFIA</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Tableau de bord</a></li>
+                <li><a href="#"><i class="fas fa-user-injured"></i> Patients</a></li>
+                <li><a href="#"><i class="fas fa-heartbeat"></i> Diagnostics</a></li>
+                <li><a href="#"><i class="fas fa-calendar-alt"></i> Rendez-vous</a></li>
+                <li class="active"><a href="#"><i class="fas fa-chart-line"></i> Statistiques</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Paramètres</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1>Statistiques du Patient</h1>
+                <p>Visualisation de l'évolution de l'état du patient</p>
+            </header>
+
+            <!-- Section graphique -->
+            <div class="chart-container">
+                <h2>Évolution de l'état du patient</h2>
+                <!-- Insérer le graphique Plotly ici -->
+                <div id="graph-container">
+                    {{ graph_html|safe }}
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="{% static 'scripts/script.js' %}"></script>
+</body>
+</html>

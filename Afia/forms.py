@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Patients,IoMts,Prelevement,Prediction, User
+from .models import Patients,IoMts,Prelevement, CustomUser
+
 class CustomUserCreationForm(UserCreationForm):
     password1 = forms.CharField(
         label="Password",
@@ -13,7 +14,7 @@ class CustomUserCreationForm(UserCreationForm):
         widget= forms.PasswordInput(attrs={"autocomplete": "new-password"})
     )
     class Meta(UserCreationForm):
-        model = User
+        model = CustomUser
         fields = UserCreationForm.Meta.fields+("password1","password2")
 
     def save(self, commit=True):
@@ -22,6 +23,12 @@ class CustomUserCreationForm(UserCreationForm):
             if commit:
                 user.save()
             return user  
+    
+class ProfileImageForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ('profile_image',)
+
 class PatientForm(forms.ModelForm):
     class Meta:
         model = Patients
@@ -35,7 +42,4 @@ class PrelevementForm(forms.ModelForm):
     class Meta:
         model = Prelevement
         fields = '__all__'
-class PredictionForm(forms.ModelForm):
-    class Meta:
-        model = Prediction
-        fields = ['valeur']
+

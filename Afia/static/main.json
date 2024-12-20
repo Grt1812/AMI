@@ -1,9 +1,6 @@
 {
-    "timestamp": "2024-07-22T10:30:00Z", 
-    "sensor_id": "heart_rate_sensor_1",
-    "data": {
-      "heart_rate": 80,
-      "oxygen_saturation": 98
-    }
-  }
-  
+  "name": "ProjetAssistantMed-main",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {}
+}

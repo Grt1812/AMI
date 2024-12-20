@@ -12,7 +12,11 @@ urlpatterns = [
     path('Profil/', views.Profil_patient, name='profil'),
     path('session/message/<int:id>', views.chat, name='message'),
     path('session/', views.chat_session, name='session'),
+    path('statistiques_patient/<int:patient_id>', views.statistiques_patient, name='statistique'),
     path('profil/enregistrer/', views.Profil_enregistrer, name='profil_enregistrer'),
     path('prelevement/<int:patient_id>',views.Prelevementdonnees,name='ma_sante'),
-    path('patients/<int:patient_id>/', views.patient_detail_view, name='patient_detail'),
+    path('dashboard/patients/', views.patients_view, name='patients'),
+    path('prediction/<int:patient_id>/', views.Prediction, name='Prediction'),
+    path('predict/', views.predict, name='predict'),
+    path("predict/result", views.result),
 ]

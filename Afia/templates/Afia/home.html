@@ -1,88 +1,143 @@
 <!DOCTYPE html>
 <html lang="fr">
 {% load static %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Afia</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-    <body>
-        <div class="top">
-            <header>
-                <div class="menu-gauche">
-                    <span class="nom-site">AFIA</span>
-                    <button id="mode-toggle">Mode clair</button>
-                </div>
-                <button id="menu-toggle" class="hamburger">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </button>
-                <div class="menu-droite">
-                    {% if is_patient and existe %}
-                        <a href="{% url 'patient_detail' patient_id %}">Ma santé</a>
-                    {% else%}
-                        {% if existe and not is_patient %}
-                            <a href="{% url 'ma_sante' patient_id %}">Ma santé</a>
-                        {% endif %}
-                    {% endif %}
-                    <a href="{% url 'session' %}">Message</a>
-                    {% if not existe %}
-                        <a href="{% url 'profil' %}">Profil</a>
-                    {% endif %}
-                    <a href="{% url 'logout' %}">Déconnexion</a>
-                </div>
-            </header>
-            <div class="top-container">
-                <h1>Bienvenue sur Afia</h1>
-                
-                <div class="separator">
-                    <div class="separator-line"></div>
-                    <div class="separator-middle"></div>
-                    <div class="separator-line"></div>
-                </div>
-                <div class="image">
-                        <img src="{% static 'image/num.jpeg' %}" alt=""> 
-                </div>
-                <div class="separator">
-                    <div class="separator-line"></div>
-                    <div class="separator-middle"></div>
-                    <div class="separator-line"></div>
-                </div>
-                <div class="text">
-                    <p>
-                        Afia est votre outil indispensable pour atteindre vos objectifs de santé. Avec notre application, vous pouvez :  
-                    </p>
-                    <ul>
-                        <li>Suivre vos progrès en temps réel</li>
-                        <li>Trouver des plans d'entraînement et de nutrition adaptés à vos besoins</li>
-                        <li>Gérer vos médicaments et rendez-vous médicaux</li>
-                        <li>Se connecter à des appareils portables</li>
-                    </ul>
-                </div>
-                <div class="separator">
-                    <div class="separator-line"></div>
-                    <div class="separator-middle"></div>
-                    <div class="separator-line"></div>
-                </div>
-                <h2>Réalisateurs</h2>
-                <div class="realisateur">
-                    <div class="card">
-                        <div class="realisateur">
-                            <div class="card-realisateur">
-                                <img src="{% static 'image/grt.jpeg' %}" alt="" width="100 px;" height="100 px">
-                                <h3>Ir Grt Ndakola</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="separator">
-                    <div class="separator-line"></div>
-                    <div class="separator-middle"></div>
-                    <div class="separator-line"></div>
-                </div>
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AFIA</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <nav class="sidebar">
+        <div class="logo">
+          <img src="{% static 'image/afia.png' %}" alt="AMI Logo" />
+          <h2>AFIA</h2>
+        </div>
+        <ul class="nav-links">
+          <li class="active">
+            <a href="{% url 'patients' %}"><i class="fas fa-home"></i> Tableau de bord</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-heartbeat"></i> Diagnostics</a>
+          </li>
+          
+          <li>
+            <a href="{% url 'predict' %}"><i class="fas fa-heartbeat"></i> Prediction</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-calendar-alt"></i> Rendez-vous</a>
+          </li>
+          <li>
+            {% if patient.id %}
+         <a href="{% url 'statistiques_patient' patient.id %}">Voir les statistiques</a>
+            {% else %}
+        <span>ID manquant</span>
+           {% endif %}
+          <a href="{% url 'logout' %}">Déconnexion</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-cog"></i> Paramètres</a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header>
+          <div class="header-left">
+            <h1>Tableau de Bord</h1>
+            <p>Assistant Médical Intelligent - Cardio-Vasculaire</p>
+          </div>
+          <div class="header-right">
+            <div class="search-bar">
+              <input type="text" placeholder="Rechercher..." />
+              <i class="fas fa-search"></i>
             </div>
-        <script src="{% static 'scripts/script.js' %}"></script>
-</body>
+            <div class="user-profile">
+              <img src="{% static 'image/icone medecin.jpg' %}" alt="Profile" />
+              <span>{{ user.username }}</span>
+            </div>
+          </div>
+        </header>
+
+        <div class="dashboard-grid">
+          <!-- Statistics Cards -->
+          <div class="stat-card">
+            <i class="fas fa-users"></i>
+            <div class="stat-info">
+              <h3>Patients Totaux</h3>
+              <p>{{ total_patients }}</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-hospital-user"></i>
+            <div class="stat-info">
+              <h3>Nouveaux Patients</h3>
+              <p>{{ new_patients }}</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-calendar-check"></i>
+            <div class="stat-info">
+              <h3>RDV Aujourd'hui</h3>
+              <p>{{ total_rdv_today }}</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-heart"></i>
+            <div class="stat-info">
+              <h3>Cas Critiques</h3>
+              <p>{{ critical_cases }}</p>
+            </div>
+          </div>
+
+          <!-- Charts Section -->
+          <div class="chart-container">
+            <h3>Évolution des Cas</h3>
+            <canvas id="casesChart" style="max-height: 250px!important;"></canvas>
+          </div>
+
+          <div class="chart-container">
+            <h3>Distribution des Pathologies</h3>
+            <canvas id="pathologiesChart" style="max-height: 300px!important;"></canvas>
+          </div>
+
+          <!-- Recent Patients Table -->
+          <div class="recent-patients">
+            <h3>Patients Récents</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Diagnostic</th>
+                  <th>Date</th>
+                  <th>Statut</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for patient in patients %}
+                <tr>
+                  <td>{{ patient.identite_patient.nom }} {{ patient.identite_patient.prenom }}</td>
+                  <td>{{ patient.diagnostic }}</td>
+                  <td>{{ patient.date_creation }}</td>
+                  <td><span class="status {{ patient.status_class }}">{{ patient.status }}</span></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="{% static 'scripts/script.js' %}"></script>
+  </body>
 </html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AMI -prediction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Styles globaux */
+        body {
+            background-image: url("{% static '/hyperpredict/images/predict1.png' %}");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Conteneur principal */
+        .main {
+            position: relative;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            max-width: 900px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Titre principal */
+        h1 {
+            color: #0086b3;
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Tableau et champs de formulaire */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        td {
+            padding: 12px 15px;
+            font-size: 16px;
+            vertical-align: middle;
+        }
+
+        /* Champ de saisie */
+        input[type="text"], select, input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus, select:focus, input[type="date"]:focus {
+            border-color: #0086b3;
+        }
+
+        /* Bouton de soumission */
+        input[type="submit"] {
+            background-color: #4dc3ff;
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #009cdb;
+        }
+
+        /* Conteneur de formulaire */
+        .form-container {
+            margin-top: 30px;
+        }
+
+        .form-container h3 {
+            text-align: center;
+            font-size: 24px;
+            color: #0086b3;
+            margin-bottom: 20px;
+        }
+
+        .form-container label {
+            font-size: 18px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-container .form-group {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <h1>Ajouter un Diagnostic</h1>
+        <div class="form-container">
+            <form action="result" method="POST">
+                <table>
+                    <tr>
+                        <td>Âge à la naissance (années) :</td>
+                        <td><input type="text" name="n1" required></td>
+                    </tr>
+                    <tr>
+                        <td>Sexe :</td>
+                        <td><input type="text" name="n2" required></td>
+                    </tr>
+                    <tr>
+                        <td>Poids (kg) :</td>
+                        <td><input type="text" name="n3" required></td>
+                    </tr>
+                    <tr>
+                        <td>Graisse corporelle (%) :</td>
+                        <td><input type="text" name="n4" required></td>
+                    </tr>
+                    <tr>
+                        <td>Graisse viscérale :</td>
+                        <td><input type="text" name="n5" required></td>
+                    </tr>
+                    <tr>
+                        <td>Indice de masse corporelle (IMC) :</td>
+                        <td><input type="text" name="n6" required></td>
+                    </tr>
+                    <tr>
+                        <td>Pression artérielle systolique (mmHg) :</td>
+                        <td><input type="text" name="n7" required></td>
+                    </tr>
+                    <tr>
+                        <td>Pression artérielle diastolique (mmHg) :</td>
+                        <td><input type="text" name="n8" required></td>
+                    </tr>
+                    <tr>
+                        <td>Pouls (bpm) :</td>
+                        <td><input type="text" name="n9" required></td>
+                    </tr>
+                    <tr>
+                        <td>Sucre à jeun (mg/dL) :</td>
+                        <td><input type="text" name="n10" required></td>
+                    </tr>
+                    <tr>
+                        <td>Sucre postprandial (mg/dL) :</td>
+                        <td><input type="text" name="n11" required></td>
+                    </tr>
+                    <tr>
+                        <td>Indice d'obésité :</td>
+                        <td><input type="text" name="n12" required></td>
+                    </tr>
+                    <tr>
+                        <td>Indice d'hypertension :</td>
+                        <td><input type="text" name="n13" required></td>
+                    </tr>
+                    <tr>
+                        <td>Indice de diabète :</td>
+                        <td><input type="text" name="n14" required></td>
+                    </tr>
+                </table>
+                {% csrf_token %}
+                <input type="submit">
+            </form>
+            Result:{{result2}}
+        </div>
+    </div>
+    <script src="{% static 'scripts/script.js' %}"></script>
+</body>
+</html>

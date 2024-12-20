@@ -1,14 +1,14 @@
 from django.contrib import admin
-from .models import Patients,IoMts,Prelevement,Prediction, Docteur, Personne, Message
+from .models import Patients,IoMts,Prelevement, Docteur, Personne,RendezVous,Diagnostic,Statistique
 
 
 @admin.register(IoMts)
 class IoMtAdmin(admin.ModelAdmin):
-    list_display = ("type_Iot", )
+    list_display = ('type_Iot','date_heure')
 
 @admin.register(Patients)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ('identite_patient', 'date_naissance', 'poids', 'taille' , 'Iot')
+    list_display = ('identite_patient', 'date_naissance', 'poids', 'taille' , 'Iot','statut')
 
 @admin.register(Docteur)
 class DocteurAdmin(admin.ModelAdmin):
@@ -18,15 +18,19 @@ class DocteurAdmin(admin.ModelAdmin):
 class PersonneAdmin(admin.ModelAdmin):
     list_display = ('nom', 'prenom', 'sexe')
 
-@admin.register(Message)
-class MessageAdmin(admin.ModelAdmin):
-    list_display = ('patient_session', 'docteur_session', 'message', 'date', 'from_patient')
-
 @admin.register(Prelevement)
 class PrelevementAdmin(admin.ModelAdmin):
     list_display = ("date_heure","saturation_O","pression_A","frequence_C","temperature")
 
-@admin.register(Prediction)
-class predictionAdmin(admin.ModelAdmin):
-    list_display = ['valeur']
+@admin.register(Diagnostic)
+class DiagnosticAdmin(admin.ModelAdmin):
+    list_display = ('patient', 'docteur', 'description', 'date_diagnostic')
 
+
+@admin.register(RendezVous)
+class RendezVousAdmin(admin.ModelAdmin):
+    list_display = ['patient','docteur','date_rendezvous','motif']
+
+@admin.register(Statistique)
+class StatistiqueAdmin(admin.ModelAdmin):
+    list_display = ['patient','date','valeur']

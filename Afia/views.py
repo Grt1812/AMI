@@ -1,8 +1,9 @@
 from django.http import JsonResponse
 from django.views.generic import View
 from django.shortcuts import render, redirect, get_object_or_404
-from Afia.models import Patients, IoMts, Prelevement,Prediction,Message, Personne, Docteur
-from .forms import PatientForm, IoMtsForm, PrelevementForm, CustomUserCreationForm
+from Afia.models import Patients, IoMts,Prelevement,Message, Personne, Docteur,Statistique,Prediction
+from .forms import CustomUserCreationForm,PatientForm
+from django.http import HttpResponseBadRequest
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
@@ -17,75 +18,79 @@ from django.http import JsonResponse
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials 
 from google.auth.exceptions import GoogleAuthError
-#import tensorflow as tf
-#import numpy as np
-
-
-#from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-
-#def load_model():
-   # model = tf.keras.models.load_model('model_AMI.h5')
-    #return model
-
-#def make_prediction(input_data):
-    #model = load_model()
-    #prediction = model.predict(input_data)
-    #return prediction
+import plotly.express as px
+import pandas as pd 
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+from django.utils import timezone
 
 @login_required(login_url='connexion')
 def acceuil(request):
+    # Vérification de l'authentification de l'utilisateur
     if request.user.is_authenticated:
         user = request.user
-        is_patient = existe = utilisateur = None
+        is_patient = None
+        utilisateur = None
+
+        # Recherche de l'utilisateur comme patient ou médecin
         patient = Patients.objects.filter(utilisateur_patient=user).first()
-        dr = Docteur.objects.filter(utilisateur_dr=user).first()
+        docteur = Docteur.objects.filter(utilisateur_dr=user).first()
+
+        # Vérifier si l'utilisateur est un patient ou un docteur
         if patient:
             is_patient = True
-            existe = True
             utilisateur = patient
-        elif dr:
+            # Rediriger le patient vers sa page dédiée (par exemple, tableau de bord patient)
+            return redirect('patient_dashboard')  # Assurez-vous que cette route est définie dans urls.py
+        elif docteur:
             is_patient = False
-            existe = True
-            utilisateur = dr
-        else :
-            is_patient = None
-            existe = False
-        patient = Patients.objects.filter(utilisateur_patient=user).first()
-        if patient:
-            patient_id = patient.id
+            utilisateur = docteur
+            # Afficher la page d'accueil du médecin
+            total_patients = Patients.objects.count()  # Total des patients
+            new_patients = Patients.objects.filter(date_creation__gte=timezone.now()-timezone.timedelta(days=30)).count()  # Nouveaux patients du mois
+            total_rdv_today = IoMts.objects.filter(date_heure__date=timezone.now().date()).count()  # RDV aujourd'hui
+            critical_cases = Prelevement.objects.filter(patient__statut='Critique').count()  # Cas critiques
+
+            # Rendre la page d'accueil du médecin avec les statistiques
+            context = {
+                'user': user,
+                'is_patient': is_patient,
+                'utilisateur': utilisateur,
+                'total_patients': total_patients,
+                'new_patients': new_patients,
+                'total_rdv_today': total_rdv_today,
+                'critical_cases': critical_cases
+            }
+
+            return render(request, 'Afia/home.html', context)  # Page d'accueil du médecin
         else:
-            dr = Docteur.objects.filter(utilisateur_dr=user).first()
-            patient_id = None
-            if dr:
-                patient = Patients.objects.order_by('?').first()
-                patient_id = patient.id
-        context = {
-            'patient_id': patient_id, 
-            'user': user,
-            'existe': existe,
-            'is_patient': is_patient,
-            'utilisateur': utilisateur
-        }
-        #L'utilisateur est connecté
-        return render(request, 'Afia/home.html', context=context)
-    else:
-        #L'utilisateur n'est pas connecté, redirigez-le vers la page de connexion
-        
-        return redirect('connexion')
+            # Si l'utilisateur n'est ni médecin ni patient, rediriger vers la page de connexion
+            return redirect('connexion')
+
+    # Si l'utilisateur n'est pas authentifié, rediriger vers la page de connexion
+    return redirect('connexion')
+
 
 def login_check(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        pwd = request.POST['password']
-        user = User.objects.filter(username=username).first()
+        username = request.POST.get('username') # Récupère l'email (maintenant username dans le formulaire)
+        password = request.POST.get('password')
+
+        if not username or not password:
+            return HttpResponseBadRequest("Email et mot de passe requis")
+
+        user = authenticate(request, username=username, password=password) #  Authentification avec l'email comme username
+
         if user:
-            auth_user = authenticate(request, username=username, password=pwd)
-            if auth_user:
-                login(request, user)
-                return redirect('acceuil')
-            else:
-                #return render(request, 'Afia/connexion.html')
-                return redirect('connexion')
+            login(request, user)
+            return redirect('acceuil')
+        else:
+            return render(request, 'Afia/home.html', {'error': 'Identifiants invalides'})
+    else:
+        return render(request, 'Afia/connexion.html') #affiche la page de connexion si la requête n'est pas POST
 
 @login_required(login_url='connexion')
 def logout_page(request):
@@ -94,19 +99,38 @@ def logout_page(request):
 
 def register(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        pwd = request.POST['password']
-        confirm = request.POST['confirm-password']
-        if pwd == confirm:
-            user = User(username=username, password=pwd)
-            user.save()
-            user.set_password(user.password)
-            user.save()
-            return redirect('connexion')
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save() #Handles password hashing automatically.
+            #You don't need to manually set password again.
+            login(request, user) # Log in the user immediately after creation
+            messages.success(request, 'Inscription réussie !') #Use Django messages
+            return redirect('acceuil')
+        else:
+            messages.error(request, 'Erreur d\'inscription. Veuillez vérifier les informations saisies.') #Use Django messages
+            return render(request, 'Afia/connexion.html', {'form': form})
+
+    else: # GET request, show the form
+        form = CustomUserCreationForm()
+        return render(request, 'Afia/connexion.html', {'form': form, 'register_mode': True})
+
 
 def connexion(request):
-    form = CustomUserCreationForm() 
-    return render(request, 'Afia/connexion.html', {'form': form}) 
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(request, username=email, password=password)  #Authenticate using email as username
+
+        if user is not None:
+            login(request, user)
+            return redirect('acceuil')
+        else:
+            messages.error(request, 'Email ou mot de passe incorrect.') #Use Django messages
+            form = CustomUserCreationForm()  #Re-instantiate the form
+            return render(request, 'Afia/connexion.html', {'form': form, 'login_error': True})
+    else: #GET request, show the form
+        form = CustomUserCreationForm()
+        return render(request, 'Afia/connexion.html', {'form': form})
 
 @login_required(login_url='connexion')
 def Profil_enregistrer(request):
@@ -276,11 +300,98 @@ def enregistrer_message(request):
     else:
         return render(request, 'Afia/chat.html')  # Remplacez par votre template de formulaire
 
-def patient_detail_view(request, patient_id): 
-    patient = get_object_or_404(Patients, id=patient_id) 
-    prelevements = Prelevement.objects.filter(patient=patient).order_by('-date_heure') 
-    context = { 
-        'patient': patient, 
-        'prelevements': prelevements, 
-        } 
-    return render(request, 'Afia/patient_detail.html', context)
+
+def patients_view(request):
+    # Récupérer la liste des patients
+    patients = Patients.objects.select_related('identite_patient').all()
+
+    # Gestion du formulaire d'ajout de patient
+    if request.method == 'POST':
+        form = PatientForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('patients')  # Redirection après ajout
+    else:
+        form = PatientForm()
+
+    # Préparer les statistiques
+    total_patients = patients.count()
+    new_patients = patients.filter(date_creation__gte='2024-01-01').count()  # Exemples
+    rdv_today = 12  # Exemple statique
+    critical_cases = patients.filter(diagnostic='Critique').count()
+
+    context = {
+        'patients': patients,
+        'form': form,
+        'total_patients': total_patients,
+        'new_patients': new_patients,
+        'rdv_today': rdv_today,
+        'critical_cases': critical_cases,
+    }
+
+    return render(request, 'Afia/patients.html', context)
+
+
+def Prediction(request):
+    return render(request, 'Prediction.html')
+
+def statistiques_patient(request, patient_id):
+    # Récupérer les données statistiques du patient
+    statistiques = Statistique.objects.filter(patient_id=patient_id).order_by('date')
+    dates = [stat.date for stat in statistiques]
+    valeurs = [stat.valeur for stat in statistiques]
+
+    # Générer le graphique avec Plotly
+    fig = px.line(
+        x=dates,
+        y=valeurs,
+        labels={'x': 'Date', 'y': 'Valeur'},
+        title='Évolution de l\'état du patient'
+    )
+
+    # Convertir le graphique en HTML
+    graph_html = fig.to_html(full_html=False)
+
+    # Renvoyer les données et le graphique au template
+    return render(request, 'statistic.html', {'graph_html': graph_html})
+
+
+def predict(request):
+    return render(request,'Afia/predict.html')
+
+def result(request):
+    data = pd.read_csv('data/hyper&diabete.csv')
+
+    X = data.drop("Outcome", axis=1)
+    Y =  data['Outcome']
+    X_train,X_test,Y_train,Y_test = train_test_split(X,Y,test_size=0.2)
+
+    model = LogisticRegression()
+    model.fit(X_train,Y_train)
+
+    val1 = float(str(request.GET['n1']))
+    val2 = float(str(request.GET['n2']))
+    val3 = float(str(request.GET['n3']))
+    val4 = float(str(request.GET['n4']))
+    val5 = float(str(request.GET['n5']))
+    val6 = float(str(request.GET['n6']))
+    val7 = float(str(request.GET['n7']))
+    val8 = float(str(request.GET['n8']))
+    val9 = float(str(request.GET['n9']))
+    val10 = float(str(request.GET['n10']))
+    val11 = float(str(request.GET['n11']))
+    val12 = float(str(request.GET['n12']))
+    val13 = float(str(request.GET['n13']))
+    val14 = float(str(request.GET['n14']))
+
+    pred = model.predict([[val1, val2, val3, val4, val5, val6, val7, val8, val9,val10,val11,val12,val13,val4]]) 
+
+    result1 = ""
+    if pred==[1]:
+        result1 = "Positive"
+    else:
+        result1 = "Negative" 
+
+
+    return render(request,'Afia/predict.html',{"result2":result1})
+
